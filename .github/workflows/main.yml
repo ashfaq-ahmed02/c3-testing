@@ -1,0 +1,45 @@
+name: CI/CD - C3 Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      # 1. Get the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Test the HTML file
+      - name: Test HTML file
+        run: |
+          test -f index.html
+          echo "HTML file exists!"
+          echo "CI Test Passed!"
+
+      # 3. Prepare website
+      - name: Build website
+        run: |
+          mkdir build
+          cp index.html build/
+          echo "Build completed!"
+
+      # 4. Upload website
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+      # 5. Deploy to GitHub Pages
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
