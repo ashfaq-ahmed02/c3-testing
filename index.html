@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>C3 — Campus to Corporate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0A0D12', surface: '#10141C', surface2: '#151A24',
+          line: 'rgba(255,255,255,0.08)', fog: '#8B93A1', paper: '#EDEFF2',
+          campus: '#4FD1FF', campusDeep: '#2E9FD6',
+          corporate: '#F5A623', corporateDeep: '#D9860F',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"','sans-serif'],
+          body: ['"Inter"','sans-serif'],
+          mono: ['"JetBrains Mono"','monospace'],
+        },
+        backgroundImage: {
+          'bridge-gradient': 'linear-gradient(90deg,#4FD1FF 0%,#8FC0C8 45%,#F5A623 100%)',
+          'bridge-gradient-soft': 'linear-gradient(120deg, rgba(79,209,255,0.14) 0%, rgba(245,166,35,0.14) 100%)',
+        },
+        keyframes: {
+          floaty: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-14px)' } },
+          pulseSoft: { '0%,100%': { opacity: .55 }, '50%': { opacity: 1 } },
+        },
+        animation: {
+          floaty: 'floaty 6s ease-in-out infinite',
+          pulseSoft: 'pulseSoft 3.2s ease-in-out infinite',
+        },
+      }
+    }
+  }
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { overflow-x: hidden; background:#0A0D12; }
+  ::selection { background:#4FD1FF; color:#0A0D12; }
+  ::-webkit-scrollbar { width:10px; }
+  ::-webkit-scrollbar-track { background:#0A0D12; }
+  ::-webkit-scrollbar-thumb { background:#232936; border-radius:8px; }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline:2px solid #4FD1FF; outline-offset:3px; border-radius:4px; }
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal.is-visible { opacity:1; transform:translateY(0); }
+  .eyebrow { font-family:'JetBrains Mono',monospace; letter-spacing:.18em; font-size:.72rem; }
+  .bridge-underline { position:relative; }
+  .bridge-underline::after { content:''; position:absolute; left:0; bottom:-10px; height:2px; width:64px; background:linear-gradient(90deg,#4FD1FF,#F5A623); }
+  .text-gradient-bridge { background:linear-gradient(90deg,#4FD1FF 0%,#F5A623 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .card-hairline { border:1px solid rgba(255,255,255,0.08); }
+  .page { display:none; }
+  .page.active { display:block; }
+  .skills-wrap { display:grid; grid-template-rows:0fr; opacity:0; transition:all .3s ease; }
+  .skills-wrap.open { grid-template-rows:1fr; opacity:1; margin-top:1.25rem; }
+  .skills-inner { overflow:hidden; }
+  .navlink.active-link { color:#EDEFF2; }
+  .navlink.active-link .underline-bar { width:100%; }
+  .underline-bar { position:absolute; left:0; bottom:-2px; height:2px; width:0; background:linear-gradient(90deg,#4FD1FF,#F5A623); transition:width .3s; }
+  @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+</style>
+</head>
+<body class="text-paper font-body antialiased">
+
+<!-- NAVBAR -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b border-transparent">
+  <nav class="mx-auto max-w-7xl px-5 sm:px-8 h-16 flex items-center justify-between">
+    <a href="#" data-page="home" class="nav-trigger flex items-center gap-2 group">
+      <span class="font-display font-bold text-xl tracking-tight text-paper">C<span class="text-gradient-bridge">3</span></span>
+      <span class="hidden sm:inline text-[11px] eyebrow text-fog group-hover:text-campus transition-colors">CAMPUS TO CORPORATE</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#" data-page="home" class="nav-trigger navlink relative px-1 py-2 text-sm font-medium text-fog hover:text-paper transition-colors">Home<span class="underline-bar"></span></a>
+      <a href="#" data-page="about" class="nav-trigger navlink relative px-1 py-2 text-sm font-medium text-fog hover:text-paper transition-colors">About<span class="underline-bar"></span></a>
+      <a href="#" data-page="domains" class="nav-trigger navlink relative px-1 py-2 text-sm font-medium text-fog hover:text-paper transition-colors">Domains<span class="underline-bar"></span></a>
+      <a href="#" data-page="team" class="nav-trigger navlink relative px-1 py-2 text-sm font-medium text-fog hover:text-paper transition-colors">Team<span class="underline-bar"></span></a>
+      <a href="#" data-page="events" class="nav-trigger navlink relative px-1 py-2 text-sm font-medium text-fog hover:text-paper transition-colors">Events<span class="underline-bar"></span></a>
+      <a href="#" data-page="join" class="nav-trigger ml-2 inline-flex items-center rounded-full bg-paper text-ink text-sm font-semibold px-5 py-2 hover:bg-campus transition-colors">Join Us</a>
+    </div>
+    <button id="menuBtn" class="md:hidden text-paper p-2 -mr-2" aria-label="Open menu">
+      <svg id="iconMenu" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg id="iconClose" class="hidden" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </nav>
+  <div id="mobileMenu" class="md:hidden fixed inset-0 top-16 bg-ink/98 backdrop-blur-lg opacity-0 pointer-events-none transition-all duration-300">
+    <div class="flex flex-col px-6 pt-8 gap-1">
+      <a href="#" data-page="home" class="nav-trigger py-4 text-2xl font-display text-paper border-b border-line">Home</a>
+      <a href="#" data-page="about" class="nav-trigger py-4 text-2xl font-display text-paper border-b border-line">About</a>
+      <a href="#" data-page="domains" class="nav-trigger py-4 text-2xl font-display text-paper border-b border-line">Domains</a>
+      <a href="#" data-page="team" class="nav-trigger py-4 text-2xl font-display text-paper border-b border-line">Team</a>
+      <a href="#" data-page="events" class="nav-trigger py-4 text-2xl font-display text-paper border-b border-line">Events</a>
+      <a href="#" data-page="join" class="nav-trigger mt-6 inline-flex items-center justify-center rounded-full bg-bridge-gradient text-ink font-semibold py-4 text-lg">Join C3</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="page-home" class="page active">
+  <section class="relative pt-36 pb-24 sm:pt-44 sm:pb-32 overflow-hidden">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-1.5 eyebrow uppercase text-fog mb-8">
+          <span class="h-1.5 w-1.5 rounded-full bg-campus"></span> A student-driven tech community
+        </div>
+        <h1 class="font-display font-semibold text-4xl sm:text-5xl md:text-6xl leading-[1.08] text-paper">
+          From <span class="text-campus">Campus</span> to <span class="text-corporate">Corporate.</span>
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-paper/85 font-medium">Learn skills. Build connections. Create opportunities.</p>
+        <p class="mt-4 text-fog text-base sm:text-lg leading-relaxed max-w-xl">C3 helps CSE students develop the technical and professional skills needed to move confidently from college into the corporate world — through hands-on sessions, real projects and a community that grows together.</p>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <a href="#" data-page="domains" class="nav-trigger group inline-flex items-center gap-2 rounded-full bg-paper text-ink font-semibold px-6 py-3.5 hover:bg-campus transition-colors">Explore C3 →</a>
+          <a href="#" data-page="join" class="nav-trigger inline-flex items-center gap-2 rounded-full border border-line px-6 py-3.5 font-semibold text-paper hover:border-corporate/60 hover:text-corporate transition-colors">Join the Community</a>
+        </div>
+      </div>
+      <div class="relative max-w-lg mx-auto lg:mx-0">
+        <div class="absolute inset-0 bg-bridge-gradient-soft blur-3xl rounded-full opacity-60"></div>
+        <svg viewBox="0 0 480 400" class="relative w-full h-auto">
+          <defs><linearGradient id="linkGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4FD1FF" stop-opacity="0.55"/><stop offset="100%" stop-color="#F5A623" stop-opacity="0.55"/></linearGradient></defs>
+          <g id="linkGroup" stroke="url(#linkGrad)" stroke-width="1.4" stroke-dasharray="4 5"></g>
+          <g id="nodeGroup"></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-line bg-surface/40">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid grid-cols-2 md:grid-cols-4 gap-8" id="statsWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-24">
+    <div class="reveal flex flex-col gap-4 max-w-2xl">
+      <span class="eyebrow uppercase text-campus/90">Why C3</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Four ways we help you grow.</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="featuresWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-24">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div class="reveal flex flex-col gap-4 max-w-2xl">
+        <span class="eyebrow uppercase text-campus/90">What We Do</span>
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Five domains. One community.</h2>
+        <p class="text-fog text-base sm:text-lg leading-relaxed">Pick a path, or explore them all — every domain is built to take you from fundamentals to real, applicable skill.</p>
+      </div>
+      <a href="#" data-page="domains" class="nav-trigger shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-campus hover:text-corporate transition-colors">View all domains →</a>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="domainsHomeWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-24">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div class="reveal flex flex-col gap-4 max-w-2xl">
+        <span class="eyebrow uppercase text-campus/90">Events</span>
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Learning, in session.</h2>
+        <p class="text-fog text-base sm:text-lg leading-relaxed">A look at what's coming up and what our members have already been part of.</p>
+      </div>
+      <a href="#" data-page="events" class="nav-trigger shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-campus hover:text-corporate transition-colors">View all events →</a>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsHomeWrap"></div>
+  </section>
+
+  <div id="ctaHome"></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="page-about" class="page">
+  <section class="pt-36 pb-20 sm:pt-44 sm:pb-24">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center reveal">
+      <span class="eyebrow uppercase text-campus">Who We Are</span>
+      <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-paper">A community built to make the leap <span class="text-gradient-bridge">less intimidating.</span></h1>
+      <p class="mt-6 text-fog text-lg leading-relaxed max-w-2xl mx-auto">C3 — Campus to Corporate is a student-driven community focused on helping students become more confident, skilled and career-ready. We focus not only on technical knowledge, but on communication, collaboration, leadership, networking and practical exposure — everything academics alone doesn't teach.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="reveal card-hairline rounded-3xl bg-surface/60 p-9 sm:p-11">
+        <span class="eyebrow uppercase text-campus">Our Mission</span>
+        <p class="mt-5 font-display text-2xl sm:text-3xl font-semibold leading-snug text-paper">To help students bridge the gap between academic learning and real-world industry skills through sessions, collaboration, practical projects, and industry-oriented learning.</p>
+      </div>
+      <div class="reveal card-hairline rounded-3xl bg-surface/60 p-9 sm:p-11">
+        <span class="eyebrow uppercase text-corporate">Our Vision</span>
+        <p class="mt-5 font-display text-2xl sm:text-3xl font-semibold leading-snug text-paper">To build a strong student tech community where people continuously learn, share knowledge, collaborate, and grow toward successful careers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+    <div class="reveal flex flex-col gap-4 max-w-2xl items-center text-center mx-auto">
+      <span class="eyebrow uppercase text-campus/90">What Makes C3 Different</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Six habits, not one trick.</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="differentiatorsWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+    <div class="reveal flex flex-col gap-4 max-w-2xl items-center text-center mx-auto">
+      <span class="eyebrow uppercase text-campus/90">The Journey</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">From your first session to your first offer.</h2>
+    </div>
+    <div class="reveal mt-16 relative">
+      <div class="hidden sm:block absolute top-5 left-0 right-0 h-px bg-bridge-gradient"></div>
+      <div class="grid grid-cols-2 sm:grid-cols-6 gap-y-10 gap-x-4" id="journeyWrap"></div>
+    </div>
+  </section>
+
+  <div id="ctaAbout"></div>
+</section>
+
+<!-- ============ DOMAINS ============ -->
+<section id="page-domains" class="page">
+  <section class="pt-36 pb-16 sm:pt-44 sm:pb-20">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center reveal">
+      <span class="eyebrow uppercase text-campus">Domains</span>
+      <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-paper">Five paths. <span class="text-gradient-bridge">One direction.</span></h1>
+      <p class="mt-6 text-fog text-lg leading-relaxed max-w-2xl mx-auto">Every domain at C3 is a space to go deep — pick the one that matches where you want to grow, or explore more than one as your interests evolve.</p>
+    </div>
+  </section>
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 pb-24">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="domainsFullWrap"></div>
+  </section>
+  <div id="ctaDomains"></div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section id="page-team" class="page">
+  <section class="pt-36 pb-16 sm:pt-44 sm:pb-20">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center reveal">
+      <span class="eyebrow uppercase text-campus">Team</span>
+      <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-paper">The people behind <span class="text-gradient-bridge">C3.</span></h1>
+      <p class="mt-6 text-fog text-lg leading-relaxed max-w-2xl mx-auto">Team photos and details will be added here as they're finalized — this page is wired and ready for them.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 pb-20">
+    <div class="reveal flex flex-col gap-4 max-w-2xl">
+      <span class="eyebrow uppercase text-campus/90">Leadership</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Steering the community.</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="leadershipWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 pb-24">
+    <div class="reveal flex flex-col gap-4 max-w-2xl">
+      <span class="eyebrow uppercase text-campus/90">Domain Teams</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Every domain, led by someone who's been through it.</h2>
+    </div>
+    <div class="mt-10 flex flex-wrap gap-2.5" id="teamFilters"></div>
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="teamWrap"></div>
+  </section>
+
+  <div id="ctaTeam"></div>
+</section>
+
+<!-- ============ EVENTS ============ -->
+<section id="page-events" class="page">
+  <section class="pt-36 pb-16 sm:pt-44 sm:pb-20">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center reveal">
+      <span class="eyebrow uppercase text-campus">Events</span>
+      <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-paper">Where the <span class="text-gradient-bridge">learning happens.</span></h1>
+      <p class="mt-6 text-fog text-lg leading-relaxed max-w-2xl mx-auto">Workshops, sessions and hands-on prep — see what's coming up and what our members have already been part of.</p>
+    </div>
+  </section>
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 pb-20">
+    <div class="reveal flex flex-col gap-4 max-w-2xl">
+      <span class="eyebrow uppercase text-campus/90">Upcoming Events</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">Save your spot.</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="upcomingWrap"></div>
+  </section>
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 pb-24">
+    <div class="reveal flex flex-col gap-4 max-w-2xl">
+      <span class="eyebrow uppercase text-campus/90">Recent Events</span>
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-paper bridge-underline pb-3">What we've already built.</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="recentWrap"></div>
+  </section>
+  <div id="ctaEvents"></div>
+</section>
+
+<!-- ============ JOIN ============ -->
+<section id="page-join" class="page">
+  <section class="pt-36 pb-20 sm:pt-44 sm:pb-24">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center reveal">
+      <span class="eyebrow uppercase text-corporate">Join Us</span>
+      <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-paper">Be Part of the <span class="text-gradient-bridge">Journey.</span></h1>
+      <p class="mt-6 text-fog text-lg leading-relaxed max-w-2xl mx-auto">Don't just prepare for the corporate world. Start building yourself for it.</p>
+      <a href="JOIN_FORM_URL" target="_blank" rel="noopener noreferrer" class="group mt-10 inline-flex items-center gap-2 rounded-full bg-bridge-gradient text-ink font-semibold px-8 py-4 hover:opacity-90 transition-opacity">Join C3 →</a>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+    <div class="reveal"><span class="eyebrow uppercase text-campus">What You Get</span><h2 class="mt-4 font-display text-3xl sm:text-4xl font-semibold text-paper">Membership, in practice.</h2></div>
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4" id="benefitsWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+    <div class="reveal"><span class="eyebrow uppercase text-corporate">Who Can Join?</span><h2 class="mt-4 font-display text-3xl sm:text-4xl font-semibold text-paper">If this sounds like you.</h2></div>
+    <div class="mt-10 flex flex-wrap gap-3" id="whoWrap"></div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-5 sm:px-8 py-24">
+    <div class="reveal relative rounded-3xl card-hairline bg-surface/60 px-6 sm:px-16 py-16 sm:py-20 text-center overflow-hidden">
+      <div class="absolute inset-0 bg-bridge-gradient-soft opacity-70"></div>
+      <div class="relative">
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-paper">Ready when you are.</h2>
+        <p class="mt-4 text-fog max-w-md mx-auto">Registration takes less than five minutes. Fill out the form and we'll take it from there.</p>
+        <a href="JOIN_FORM_URL" target="_blank" rel="noopener noreferrer" class="group mt-8 inline-flex items-center gap-2 rounded-full bg-paper text-ink font-semibold px-8 py-4 hover:bg-campus transition-colors">Join C3 →</a>
+      </div>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-line bg-surface/40">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+    <div>
+      <span class="font-display font-bold text-2xl text-paper">C<span class="text-gradient-bridge">3</span></span>
+      <p class="mt-3 text-fog text-sm max-w-xs">Learn. Connect. Grow.</p>
+      <p class="mt-1 text-fog/70 text-sm max-w-xs">Campus to Corporate</p>
+    </div>
+    <div>
+      <h3 class="eyebrow uppercase text-fog mb-4">Quick Links</h3>
+      <ul class="space-y-2.5">
+        <li><a href="#" data-page="home" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">Home</a></li>
+        <li><a href="#" data-page="about" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">About</a></li>
+        <li><a href="#" data-page="domains" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">Domains</a></li>
+        <li><a href="#" data-page="team" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">Team</a></li>
+        <li><a href="#" data-page="events" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">Events</a></li>
+        <li><a href="#" data-page="join" class="nav-trigger text-sm text-paper/80 hover:text-campus transition-colors">Join Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="eyebrow uppercase text-fog mb-4">Connect</h3>
+      <div class="flex items-center gap-3">
+        <a href="INSTAGRAM_URL" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="h-10 w-10 rounded-full border border-line flex items-center justify-center text-fog hover:text-campus hover:border-campus/50 transition-colors">IG</a>
+        <a href="LINKEDIN_URL" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="h-10 w-10 rounded-full border border-line flex items-center justify-center text-fog hover:text-campus hover:border-campus/50 transition-colors">in</a>
+        <a href="GITHUB_URL" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="h-10 w-10 rounded-full border border-line flex items-center justify-center text-fog hover:text-campus hover:border-campus/50 transition-colors">GH</a>
+        <a href="mailto:EMAIL_ADDRESS" aria-label="Email" class="h-10 w-10 rounded-full border border-line flex items-center justify-center text-fog hover:text-corporate hover:border-corporate/50 transition-colors">@</a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-line">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8 py-6 text-xs text-fog/70 flex flex-col sm:flex-row gap-2 justify-between">
+      <p>© 2026 C3 — Campus to Corporate. All Rights Reserved.</p>
+      <p class="text-fog/50">Built by students, for students.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- EVENT MODAL -->
+<div id="eventModal" class="fixed inset-0 z-[100] hidden items-end sm:items-center justify-center bg-ink/80 backdrop-blur-sm p-0 sm:p-6">
+  <div class="relative w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto bg-surface card-hairline rounded-t-3xl sm:rounded-3xl" id="eventModalContent"></div>
+</div>
+
+<script>
+// ---------- DATA (mirrors src/data/*.js) ----------
+const domains = [
+  { id:'01', name:'Design & Development', tone:'campus', description:'Learn to design and build modern digital experiences through UI/UX, web development, frontend technologies and software development.', skills:['UI/UX Design','Figma','HTML','CSS','JavaScript','Frontend Development','Backend Development'] },
+  { id:'02', name:'AI & ML', tone:'mid1', description:'Explore Artificial Intelligence and Machine Learning through practical projects, intelligent applications and modern AI tools.', skills:['Python','Machine Learning','Generative AI','LLMs','Prompt Engineering','AI Tools','Data & Models'] },
+  { id:'03', name:'Networking & Cybersecurity', tone:'mid2', description:'Understand how networks work and learn how to secure systems, applications and digital infrastructure.', skills:['Computer Networks','Linux','Network Security','Cybersecurity','Ethical Hacking','Cloud Security','Wireshark','Nmap'] },
+  { id:'04', name:'Data Analytics', tone:'mid3', description:'Turn raw data into meaningful insights and learn how data can support smarter decisions.', skills:['Excel','SQL','Python','Power BI','Data Visualization','Data Analysis','Statistics'] },
+  { id:'05', name:'Communication Skills', tone:'corporate', description:'Develop the communication and professional skills needed to confidently interact, present ideas and succeed in the corporate environment.', skills:['Public Speaking','Presentation','Leadership','Teamwork','Interview Skills','Professional Communication','Networking'] },
+];
+const TONE = {
+  campus:{text:'text-campus',ring:'group-hover:border-campus/50',dot:'bg-campus'},
+  mid1:{text:'text-[#7FCBDB]',ring:'group-hover:border-[#7FCBDB]/50',dot:'bg-[#7FCBDB]'},
+  mid2:{text:'text-[#A8BFB8]',ring:'group-hover:border-[#A8BFB8]/50',dot:'bg-[#A8BFB8]'},
+  mid3:{text:'text-[#D3B074]',ring:'group-hover:border-[#D3B074]/50',dot:'bg-[#D3B074]'},
+  corporate:{text:'text-corporate',ring:'group-hover:border-corporate/50',dot:'bg-corporate'},
+};
+const categories = ['All','Leadership','Development','Design','AI & ML','Networking & Cybersecurity','Data Analytics','Communication','Organizing Team'];
+const team = [
+  {id:'TEAM_MEMBER_01',name:'TEAM_MEMBER_01',role:'President',team:'Leadership',isLeadership:true},
+  {id:'TEAM_MEMBER_02',name:'TEAM_MEMBER_02',role:'Vice President',team:'Leadership',isLeadership:true},
+  {id:'TEAM_MEMBER_03',name:'TEAM_MEMBER_03',role:'Domain Lead — Design & Development',team:'Development',isLeadership:false},
+  {id:'TEAM_MEMBER_04',name:'TEAM_MEMBER_04',role:'Domain Lead — Design',team:'Design',isLeadership:false},
+  {id:'TEAM_MEMBER_05',name:'TEAM_MEMBER_05',role:'Domain Lead — AI & ML',team:'AI & ML',isLeadership:false},
+  {id:'TEAM_MEMBER_06',name:'TEAM_MEMBER_06',role:'Domain Lead — Networking & Cybersecurity',team:'Networking & Cybersecurity',isLeadership:false},
+  {id:'TEAM_MEMBER_07',name:'TEAM_MEMBER_07',role:'Domain Lead — Data Analytics',team:'Data Analytics',isLeadership:false},
+  {id:'TEAM_MEMBER_08',name:'TEAM_MEMBER_08',role:'Domain Lead — Communication Skills',team:'Communication',isLeadership:false},
+  {id:'TEAM_MEMBER_09',name:'TEAM_MEMBER_09',role:'Events & Organizing Lead',team:'Organizing Team',isLeadership:false},
+];
+const events = [
+  {id:'ai-tools-workshop',title:'AI Tools Workshop',category:'AI & ML',date:'DATE_TBA',status:'upcoming',description:'A hands-on session exploring practical AI tools that boost productivity, creativity and problem-solving for everyday student and professional work.',highlights:['Live walkthroughs of modern AI tools','Hands-on practice with real use cases','Q&A with domain mentors']},
+  {id:'web-development-session',title:'Web Development Session',category:'Design & Development',date:'DATE_TBA',status:'upcoming',description:'An introductory-to-intermediate session covering modern frontend development practices, from fundamentals to building real interfaces.',highlights:['Frontend fundamentals refresher','Building a real component from scratch','Best practices & resources to keep learning']},
+  {id:'hackathon-preparation',title:'Hackathon Preparation',category:'Design & Development',date:'DATE_TBA',status:'upcoming',description:'A prep session to help students form teams, sharpen ideation skills and approach hackathons with a clear strategy.',highlights:['Team formation & idea validation','Rapid prototyping tips','Pitching and presenting your project']},
+  {id:'career-placement-session',title:'Career & Placement Session',category:'Communication Skills',date:'DATE_TBA',status:'recent',description:'A session focused on interview readiness, resume building and understanding what recruiters look for in campus placements.',highlights:['Resume & profile review tips','Common interview formats explained','Open floor Q&A']},
+  {id:'networking-cybersecurity-session',title:'Networking & Cybersecurity Session',category:'Networking & Cybersecurity',date:'DATE_TBA',status:'recent',description:'An overview of core networking concepts and cybersecurity fundamentals, with a look at tools used in the field.',highlights:['Networking fundamentals recap','Intro to common security tools','Career paths in cybersecurity']},
+];
+const stats = [{v:5,s:'+',l:'Domains'},{v:20,s:'+',l:'Active Members'},{v:10,s:'+',l:'Sessions & Events'},{v:null,s:'∞',l:'Opportunities to Grow'}];
+const features = [
+  {i:'01',icon:'📘',t:'Learn',d:'Learn practical and industry-relevant skills.'},
+  {i:'02',icon:'🤝',t:'Connect',d:'Connect with students, mentors, speakers and professionals.'},
+  {i:'03',icon:'🛠️',t:'Build',d:'Build projects, participate in hackathons and gain practical experience.'},
+  {i:'04',icon:'📈',t:'Grow',d:'Develop technical, communication and leadership skills.'},
+];
+const differentiators = [
+  {t:'Practical Learning',d:'Sessions built around doing, not just watching — skills you can apply immediately.'},
+  {t:'Peer-to-Peer Learning',d:'Students teaching students, sharing what they know as they learn it themselves.'},
+  {t:'Industry Exposure',d:'Real tools, real workflows and real conversations about what the industry expects.'},
+  {t:'Team Collaboration',d:'Projects and challenges tackled together, the way real teams actually work.'},
+  {t:'Leadership',d:'Chances to lead sessions, domains and events — and grow into the role.'},
+  {t:'Career Readiness',d:'From interviews to portfolios, preparation that goes beyond the classroom.'},
+];
+const journey = ['Learn','Practice','Collaborate','Build','Lead','Grow'];
+const benefits = ['Learn','Collaborate','Build Projects','Attend Workshops','Participate in Hackathons','Develop Communication Skills','Build Your Network','Grow as a Leader'];
+const who = ['Curious to learn','Interested in technology','Interested in design','Interested in AI','Interested in cybersecurity','Interested in data','Wanting to improve communication','Wanting to build projects','Wanting to grow professionally'];
+
+// ---------- RENDER HELPERS ----------
+function domainCard(d, idx){
+  const tone = TONE[d.tone];
+  return `<div class="reveal group card-hairline rounded-2xl bg-surface/60 p-7 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:bg-surface ${tone.ring}">
+    <div class="flex items-start justify-between"><span class="font-mono text-sm text-fog/50">${d.id}</span><span class="h-2 w-2 rounded-full ${tone.dot}"></span></div>
+    <h3 class="mt-6 font-display text-2xl font-semibold text-paper">${d.name}</h3>
+    <p class="mt-3 text-fog text-sm leading-relaxed">${d.description}</p>
+    <button onclick="toggleSkills(this)" class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold ${tone.text}">Explore Domain →</button>
+    <div class="skills-wrap"><div class="skills-inner"><div class="flex flex-wrap gap-2 border-t border-line pt-4">
+      ${d.skills.map(s=>`<span class="text-xs font-medium text-fog/90 bg-ink/60 border border-line rounded-full px-3 py-1.5">${s}</span>`).join('')}
+    </div></div></div>
+  </div>`;
+}
+function toggleSkills(btn){
+  const wrap = btn.nextElementSibling;
+  const open = wrap.classList.toggle('open');
+  btn.innerHTML = open ? 'Hide skills' : 'Explore Domain →';
+}
+function initials(name){ return name.replace('TEAM_MEMBER_','M').split(/[\s_]/).map(p=>p[0]).join('').slice(0,2).toUpperCase(); }
+function teamCard(m){
+  return `<div class="reveal group relative rounded-2xl card-hairline bg-surface/60 overflow-hidden transition-all duration-300 hover:-translate-y-1.5">
+    <div class="relative aspect-[4/5] overflow-hidden bg-ink flex items-center justify-center bg-bridge-gradient-soft">
+      <span class="font-display text-4xl font-semibold text-paper/40">${initials(m.name)}</span>
+    </div>
+    <div class="p-5"><h3 class="font-display text-lg font-semibold text-paper">${m.name}</h3><p class="text-sm text-campus mt-0.5">${m.role}</p></div>
+  </div>`;
+}
+function eventCard(e){
+  return `<div class="reveal group card-hairline rounded-2xl bg-surface/60 overflow-hidden hover:-translate-y-1 hover:bg-surface transition-all duration-300">
+    <div class="relative h-44 bg-bridge-gradient-soft overflow-hidden flex items-center justify-center">
+      <span class="font-display text-2xl font-semibold text-paper/25 text-center px-4">${e.title}</span>
+      <span class="absolute top-3 left-3 text-[11px] font-mono uppercase tracking-wide bg-ink/80 border border-line rounded-full px-3 py-1 text-fog">${e.status==='upcoming'?'Upcoming':'Recent'}</span>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-3 text-xs text-fog/80 mb-3"><span>📅 ${e.date}</span><span>🏷️ ${e.category}</span></div>
+      <h3 class="font-display text-xl font-semibold text-paper">${e.title}</h3>
+      <p class="mt-2 text-sm text-fog leading-relaxed">${e.description}</p>
+      <button onclick="openEvent('${e.id}')" class="mt-5 text-sm font-semibold text-campus hover:text-corporate transition-colors">View Event →</button>
+    </div>
+  </div>`;
+}
+function ctaBlock(title, label, page){
+  return `<section class="mx-auto max-w-7xl px-5 sm:px-8 py-24">
+    <div class="reveal relative rounded-3xl card-hairline bg-surface/60 px-6 sm:px-16 py-16 sm:py-20 text-center overflow-hidden">
+      <div class="absolute inset-0 bg-bridge-gradient-soft opacity-70"></div>
+      <div class="relative">
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-paper max-w-3xl mx-auto leading-tight">${title}</h2>
+        <a href="#" data-page="${page}" class="nav-trigger group mt-9 inline-flex items-center gap-2 rounded-full bg-bridge-gradient text-ink font-semibold px-8 py-4 hover:opacity-90 transition-opacity">${label} →</a>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderAll(){
+  // hero bridge visual
+  const nodes = [[40,260,7,'#4FD1FF'],[120,120,5,'#4FD1FF'],[150,320,9,'#6FC9D8'],[230,200,6,'#8FC0C8'],[260,70,5,'#93BFC0'],[330,260,8,'#C0A870'],[360,130,6,'#E0A544'],[420,320,10,'#F5A623'],[440,190,6,'#F5A623']];
+  const links = [[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[5,6],[5,7],[6,8],[7,8],[4,6]];
+  document.getElementById('linkGroup').innerHTML = links.map(([a,b],i)=>{const n1=nodes[a],n2=nodes[b];return `<line x1="${n1[0]}" y1="${n1[1]}" x2="${n2[0]}" y2="${n2[1]}" class="animate-pulseSoft" style="animation-delay:${i*0.15}s"/>`}).join('');
+  document.getElementById('nodeGroup').innerHTML = nodes.map(([x,y,r,c])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" class="animate-floaty" style="transform-origin:${x}px ${y}px"/>`).join('');
+
+  document.getElementById('statsWrap').innerHTML = stats.map(s=>`<div class="reveal text-center md:text-left"><div class="font-display text-4xl sm:text-5xl font-semibold text-gradient-bridge" data-count="${s.v ?? ''}" data-suffix="${s.s}">${s.v===null?s.s:'0'+s.s}</div><p class="mt-2 text-fog text-sm">${s.l}</p></div>`).join('');
+  document.getElementById('featuresWrap').innerHTML = features.map(f=>`<div class="reveal group card-hairline rounded-2xl p-6 sm:p-7 bg-surface/60 hover:bg-surface transition-colors hover:-translate-y-1 duration-300"><div class="flex items-center justify-between mb-6"><span class="font-mono text-xs text-fog/60">${f.i}</span><span class="text-xl">${f.icon}</span></div><h3 class="font-display text-lg font-semibold text-paper mb-2">${f.t}</h3><p class="text-fog text-sm leading-relaxed">${f.d}</p></div>`).join('');
+  document.getElementById('domainsHomeWrap').innerHTML = domains.map(domainCard).join('');
+  document.getElementById('domainsFullWrap').innerHTML = domains.map(domainCard).join('');
+  document.getElementById('eventsHomeWrap').innerHTML = events.filter(e=>e.status==='upcoming').slice(0,3).map(eventCard).join('');
+  document.getElementById('upcomingWrap').innerHTML = events.filter(e=>e.status==='upcoming').map(eventCard).join('');
+  document.getElementById('recentWrap').innerHTML = events.filter(e=>e.status==='recent').map(eventCard).join('');
+  document.getElementById('differentiatorsWrap').innerHTML = differentiators.map(d=>`<div class="reveal card-hairline rounded-2xl bg-surface/60 p-7 hover:bg-surface hover:-translate-y-1 transition-all duration-300"><h3 class="font-display text-lg font-semibold text-paper">${d.t}</h3><p class="mt-2 text-fog text-sm leading-relaxed">${d.d}</p></div>`).join('');
+  document.getElementById('journeyWrap').innerHTML = journey.map((s,i)=>`<div class="flex flex-col items-center text-center relative"><span class="relative z-10 h-10 w-10 rounded-full bg-ink border-2 flex items-center justify-center font-mono text-xs text-paper" style="border-color:color-mix(in srgb, #4FD1FF ${100-i*16}%, #F5A623 ${i*16}%)">${i+1}</span><span class="mt-3 text-sm font-medium text-paper">${s}</span></div>`).join('');
+  document.getElementById('leadershipWrap').innerHTML = team.filter(m=>m.isLeadership).map(teamCard).join('');
+  renderTeamFilters(); renderTeamGrid('All');
+  document.getElementById('benefitsWrap').innerHTML = benefits.map(b=>`<div class="reveal card-hairline rounded-xl bg-surface/60 p-5 flex items-center gap-3 hover:bg-surface hover:-translate-y-0.5 transition-all duration-300"><span class="h-8 w-8 shrink-0 rounded-full bg-bridge-gradient-soft border border-line flex items-center justify-center text-campus">✓</span><span class="text-sm font-medium text-paper">${b}</span></div>`).join('');
+  document.getElementById('whoWrap').innerHTML = who.map(w=>`<div class="reveal rounded-full border border-line px-5 py-2.5 text-sm text-paper/90 hover:border-campus/50 hover:text-campus transition-colors">${w}</div>`).join('');
+
+  document.getElementById('ctaHome').innerHTML = ctaBlock('Your journey from campus to corporate starts here.','Join C3','join');
+  document.getElementById('ctaAbout').innerHTML = ctaBlock('Ready to start your own journey with C3?','Join C3','join');
+  document.getElementById('ctaDomains').innerHTML = ctaBlock("Found your domain? Let's get you in.",'Join C3','join');
+  document.getElementById('ctaTeam').innerHTML = ctaBlock('Want to be part of this team next semester?','Join C3','join');
+  document.getElementById('ctaEvents').innerHTML = ctaBlock("Don't want to miss the next one?",'Join C3','join');
+
+  attachNavTriggers();
+  initReveal();
+  initCounters();
+}
+
+function renderTeamFilters(){
+  document.getElementById('teamFilters').innerHTML = categories.map(c=>`<button data-filter="${c}" class="filterBtn rounded-full px-4 py-2 text-sm font-medium border transition-colors ${c==='All'?'bg-paper text-ink border-paper':'border-line text-fog hover:text-paper hover:border-paper/40'}">${c}</button>`).join('');
+  document.querySelectorAll('.filterBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filterBtn').forEach(b=>b.className='filterBtn rounded-full px-4 py-2 text-sm font-medium border transition-colors border-line text-fog hover:text-paper hover:border-paper/40');
+      btn.className='filterBtn rounded-full px-4 py-2 text-sm font-medium border transition-colors bg-paper text-ink border-paper';
+      renderTeamGrid(btn.dataset.filter);
+    });
+  });
+}
+function renderTeamGrid(filter){
+  let list = team.filter(m=>!m.isLeadership);
+  if(filter==='Leadership') list = [];
+  else if(filter!=='All') list = list.filter(m=>m.team===filter);
+  document.getElementById('teamWrap').innerHTML = list.length ? list.map(teamCard).join('') : `<p class="text-fog text-sm col-span-full">No members listed under this category yet.</p>`;
+  initReveal();
+}
+
+function openEvent(id){
+  const e = events.find(x=>x.id===id);
+  document.getElementById('eventModalContent').innerHTML = `
+    <div class="relative h-52 sm:h-64 bg-bridge-gradient-soft flex items-center justify-center">
+      <span class="font-display text-3xl font-semibold text-paper/25 text-center px-6">${e.title}</span>
+      <button onclick="closeEvent()" aria-label="Close" class="absolute top-4 right-4 h-9 w-9 rounded-full bg-ink/70 border border-line flex items-center justify-center text-paper hover:text-campus">✕</button>
+    </div>
+    <div class="p-6 sm:p-8">
+      <div class="flex items-center gap-4 text-xs text-fog/80 mb-4"><span>📅 ${e.date}</span><span>🏷️ ${e.category}</span></div>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold text-paper">${e.title}</h2>
+      <p class="mt-4 text-fog leading-relaxed">${e.description}</p>
+      <div class="mt-6"><h3 class="eyebrow uppercase text-fog mb-3">Highlights</h3>
+        <ul class="space-y-2">${e.highlights.map(h=>`<li class="flex items-start gap-2.5 text-sm text-paper/90"><span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-bridge-gradient shrink-0"></span>${h}</li>`).join('')}</ul>
+      </div>
+      <a href="JOIN_FORM_URL" target="_blank" rel="noopener noreferrer" class="mt-8 inline-flex items-center justify-center w-full sm:w-auto rounded-full bg-bridge-gradient text-ink font-semibold px-7 py-3.5 hover:opacity-90 transition-opacity">Register Now</a>
+    </div>`;
+  const modal = document.getElementById('eventModal');
+  modal.classList.remove('hidden'); modal.classList.add('flex');
+  document.body.style.overflow='hidden';
+}
+function closeEvent(){
+  const modal = document.getElementById('eventModal');
+  modal.classList.add('hidden'); modal.classList.remove('flex');
+  document.body.style.overflow='';
+}
+document.getElementById('eventModal').addEventListener('click', (e)=>{ if(e.target.id==='eventModal') closeEvent(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeEvent(); });
+
+// ---------- NAVIGATION ----------
+function attachNavTriggers(){
+  document.querySelectorAll('.nav-trigger').forEach(el=>{
+    el.onclick = (ev)=>{
+      ev.preventDefault();
+      const page = el.dataset.page;
+      showPage(page);
+      closeMobileMenu();
+    };
+  });
+}
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.navlink').forEach(n=>n.classList.toggle('active-link', n.dataset.page===page));
+  window.scrollTo({top:0, behavior:'auto'});
+  initReveal();
+}
+
+// mobile menu
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const iconMenu = document.getElementById('iconMenu');
+const iconClose = document.getElementById('iconClose');
+let menuOpen = false;
+menuBtn.addEventListener('click', ()=>{
+  menuOpen = !menuOpen;
+  mobileMenu.classList.toggle('opacity-0', !menuOpen);
+  mobileMenu.classList.toggle('pointer-events-none', !menuOpen);
+  iconMenu.classList.toggle('hidden', menuOpen);
+  iconClose.classList.toggle('hidden', !menuOpen);
+  document.body.style.overflow = menuOpen ? 'hidden' : '';
+});
+function closeMobileMenu(){
+  menuOpen = false;
+  mobileMenu.classList.add('opacity-0','pointer-events-none');
+  iconMenu.classList.remove('hidden'); iconClose.classList.add('hidden');
+  document.body.style.overflow='';
+}
+
+// navbar scroll bg
+window.addEventListener('scroll', ()=>{
+  const nav = document.getElementById('navbar');
+  if(window.scrollY>12){ nav.classList.add('bg-ink/85','backdrop-blur-md','border-line'); }
+  else { nav.classList.remove('bg-ink/85','backdrop-blur-md','border-line'); }
+});
+
+// scroll reveal
+function initReveal(){
+  const els = document.querySelectorAll('.reveal:not(.is-visible)');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+    });
+  }, {threshold:0.15});
+  els.forEach(el=>io.observe(el));
+}
+
+// stat counters
+function initCounters(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target = el.dataset.count;
+    if(target===''){ return; } // '∞' stays static
+    const suffix = el.dataset.suffix;
+    const num = parseInt(target,10);
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const start = performance.now(); const duration=1400;
+          function tick(now){
+            const p = Math.min((now-start)/duration,1);
+            const eased = 1-Math.pow(1-p,3);
+            el.textContent = Math.round(eased*num)+suffix;
+            if(p<1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          io.disconnect();
+        }
+      });
+    }, {threshold:0.4});
+    io.observe(el);
+  });
+}
+
+renderAll();
+</script>
+</body>
+</html>
